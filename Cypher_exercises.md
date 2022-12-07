@@ -182,7 +182,7 @@ limit 5
 
 ```
 match (b:Beneficiary) 
-return  b.state as state_code,b.gender as gender, count(*) as amount_of_beneficiaries 
+return  b.state as state_code, b.gender, count(*) as amount_of_beneficiaries 
 order by amount_of_beneficiaries desc 
 limit 5
 ```
@@ -190,25 +190,7 @@ limit 5
 
 <br/>
 
-In this exercise we only extracted information from one type of node. 
-
-## **1.2 Exercise : Look into the beneficiary with id BENE134045. How many claims are associated? With which providers? How are the Physicians involved?**
-
-Next we will extract information from two related nodes.
-<details>
-  <summary> Answer to Exercise 1.2 (Click to expand)</summary>
-
-```
-MATCH (cond:Condition)<--(b:Beneficiary)<--(c:Claim)-->(p:Physician)
-MATCH (pr:Provider)<--(c)
-WHERE b.id='BENE134045'
-RETURN b, p, c, cond, pr
-LIMIT 10
-```
-</details>
-
-<br/>
-
+In this exercise we only extracted information from one type of node. Next we will see how we can extract information from two or more nodes.
 ## **2. Example  : Find the IDs of the top 5 providers with the most claims assigned to them.**
 
 ```
@@ -258,16 +240,55 @@ The result should look like the following table:
  ```
 
  <details>
-  <summary> Answer to Exercise 2 (Click to expand)</summary>
+  <summary> Answer to Exercise 2.1 (Click to expand)</summary>
 
 ```
 match (p:Provider)<--(c:Claim)
-return p.id as provider_ID,  count(c) as number_claims, sum(c.reimbursedAmt) as total_reimbursed_amount
+return p.id as provider_ID,  count(c) as number_claims,sum(c.reimbursedAmt) as total_reimbursed_amount
 order by number_claims desc
 limit 5
 ```
 </details>
 <br/>
+
+## **2.2 Exercise : Could a reimbursement amount over 100.000 for a claim be a good flag for fraudulent providers?**
+<details>
+  <summary> Answer to exercise 2.2(Click to expand)</summary>
+
+```
+MATCH (c:Claim)-->(p:Provider)
+WHERE c.reimbursedAmt >= 100000
+RETURN c.id as claim, c.reimbursedAmt as amount, p.id as provider, p.fraud as fraud
+ORDER BY amount DESC
+```
+When ordering by descending see that most of the claims above 100.000 are associated with fraudulent providers. This could indicate that the reimbursement amount could be a feature for machine learning, but more testing must be done.
+</details>
+
+<br>
+
+
+
+## **2.3 Exercise : Look into the beneficiary with id BENE134045. How many claims are they associated with? With which providers? How are the Physicians involved? Plot all the first degree connections for this beneficiary and then all the 1st degree connections of those connections.**
+
+Next we will extract information from two related nodes.
+<details>
+  <summary> Answer to Exercise 2.3 (Click to expand)</summary>
+
+```
+MATCH (b:Beneficiary{id:'BENE134045'})-->(cond:Condition)
+MATCH (c:Claim)-->(b)
+MATCH (c)-[x]->(p:Physician)
+MATCH (c)-->(pr:Provider)
+RETURN b, p, c, cond, pr,x
+LIMIT 100
+```
+</details>
+
+<br/>
+Lets explore the results in graph form a bit.
+Expand one or two nodes.  
+You can reproduce the same result if you match the beneficiary and then expand all the the nodes connected to them. 
+
 
 
 ## **3. Exercise : List the top 10 providers with the highest number of claims, the average reimbursement amount per claim and list the fraud flag as well. Order by descending average reimbursement amount per claim.**
@@ -351,17 +372,7 @@ We can see here that we had to add the relationship as a variable so that we can
 What we can see from the results is that the operating physician is the highest charging type of physician.  
 
 Quick question: The average reimbursed amount number is not very readable though. Can you figure out from [this list of functions](https://neo4j.com/docs/cypher-cheat-sheet/current/#functions) a nice function to make the number more readable i.e. to not have so many decimals, like in the table below?
-```
-╒═════════════════════════════╤═══════════════╤═══════════════════════════╕
-│"physician_relationship_type"│"number_claims"│"average_reimbursed_amount"│
-╞═════════════════════════════╪═══════════════╪═══════════════════════════╡
-│"HAS_OPERATING"              │23830          │12454.0                    │
-├─────────────────────────────┼───────────────┼───────────────────────────┤
-│"HAS_OTHER"                  │4690           │11788.0                    │
-├─────────────────────────────┼───────────────┼───────────────────────────┤
-│"HAS_ATTENDING"              │40362          │10086.0                    │
-└─────────────────────────────┴───────────────┴───────────────────────────┘
-```
+
 <br>
 <details>
   <summary> Answer to quick question(Click to expand)</summary>
@@ -369,14 +380,14 @@ Quick question: The average reimbursed amount number is not very readable though
 ```
  either the round() or toInteger() functions over avg(c.reimbursedAmt) 
 ```
-
+There is a lot of math , string and logical functions that can be applied on the node properties.
 </details>
 <br>
 Up to now we have been viewing our results in tabular form much like as with any standard SQL query language. We will now also get acquainted with results in graph form. This way is much more visual, it makes it easier to spot interesting connection and is another benefit of using graph databases.
 
 Lets look at an example:
 
-We want to find the operating physicians that are connected to a claim where the reimbursed amount was between 25.000 and 30.000 
+We want to find the operating physicians that are connected to a claim where the reimbursed amount was between 15.000 and 30.000 
 
 ```
 match (p:Physician) <-[r:HAS_OPERATING]- (c:Claim) 
@@ -422,24 +433,11 @@ limit 5
 ```
 </details>
 
-## **4.2 Exercise : Find the average claim reimbursement for claims with patients that have cancer.**
+<br>
 
-The result should approximately 10403
-<details>
-  <summary> Answer to Exercise 4.2 (Click to expand)</summary>
 
-```
-MATCH (con:Condition {id: 'ChronicCond_Cancer'})<--(b:Beneficiary)<--(c:Claim)
-WITH avg(c.reimbursedAmt) as average_reimbursed, max(c.reimbursedAmt) as max_reimbursed, min(c.reimbursedAmt) as min_reimbursed
-RETURN average_reimbursed, max_reimbursed, min_reimbursed
-```
-Here we can also see what the maximum and minimum reimbursement amounts are
-</details>
 
-<br/>
-Next we will connect two or more nodes together and extract information from more that two nodes.
 
-<br/>
 
 ## **5. Example  : Lets explore the connections between physicians, claims and benefiaries. We are going to limit the results to 20.**   
 
@@ -451,7 +449,7 @@ limit 20
 ```
 We can see here how we can query 2nd degree relationships. We could easily expand the chain of nodes as much as we want but that is not always very comprehensible. Let's expand then!
 
-## **5. Example 2: Lets find the beneficiaries that have more than one claim with the same physician and limit the total amount to 200.**  
+## **5.1 Example : Lets find the beneficiaries that have more than one claim with the same physician and limit the total amount to 200.**  
 ```
 match (ph:Physician)<--(c1:Claim)-->(b:Beneficiary)
 match (b)<--(c2:Claim)-->(ph)
@@ -471,29 +469,29 @@ limit 200
 </details>
 <br>
 
-The first match statement here creates our initial population. Then we can carry over the nodes that match our search criteria and use them in a second match statement. The only remaining constraint is that the claims in the two match statements have different identities.
+The first match statement here creates our initial population. Then we can carry over the nodes that match our search criteria and use them in a second match statement. The only remaining constraint is that the claims in the two match statements should have different identities in order to get the result we want.
 <br>  
 Explore the graph result. Does the output make sense?
 <br>
 
-## **5. Exercise : Find all the physicians that collaborate with more than one provider. Limit the results to 30 nodes.** 
+## **5.2 Exercise : Find all the physicians that collaborate with more than one provider. Limit the results to 30 nodes.** 
 
 TIP: Use the logic from the example
 <details>
-  <summary> Help to Exercise 5 (Click to expand)</summary>
+  <summary> Help to Exercise 5.2 (Click to expand)</summary>
 
 ```
 match (ph:Physician)<--(m)--> (p1:Provider)
-match {...}<--(n)--> (ph)
-where p2.id<>p1.id 
-return p2,p1,ph,n,m
+match {...}<--{...}-->{...}
+where {...}<>{...} 
+return {...},p1,ph,n,m
 limit 30
 ```
 </details>
 
 
 <details>
-  <summary> Answer to Exercise 5 (Click to expand)</summary>
+  <summary> Answer to Exercise 5.2 (Click to expand)</summary>
 
 ```
 match (ph:Physician)<--(m)--> (p1:Provider)
@@ -518,11 +516,11 @@ return pr, c, p
 
 Explore the graph! Check out the answer above as well!
 
-Lets expand the idea to physicians and the claims and introduce the  <a href="https://neo4j.com/docs/cypher-cheat-sheet/current/#with" target="_blank">WITH statement</a> (test to see if the second opens in a new browser). What if there is a physician that had multiple roles in the same claim? That does not sound right... 
+Lets expand the idea to physicians and the claims and introduce the  <a href="https://neo4j.com/docs/cypher-cheat-sheet/current/#with" target="_blank">WITH statement</a>. What if there is a physician that had multiple roles in the same claim? That does not sound right... 
 
 
 ## **6. Example : Lets find the physicians that have more than one type of connection to the same claim. Limit the results to 100.**  
-The with statement can be basically thought of a temporary result statement. In this case, we can use it to find which physicians have more than one relationship to a claim and filter on that aggregation before we even reach the the result statement. 
+The WITH statement can be basically thought of a temporary RESULT statement. In this case, we can use it to find which physicians have more than one relationship to a claim and filter on that aggregation before we even reach the the result statement. 
 ```
 match (p:Physician)<-[rel]-(c:Claim)
 with p, c, count(*) as  rel_count, collect(type(rel)) as rel_types
@@ -538,7 +536,9 @@ It would be interesting to see if physicians with similar behaviour are connecte
 <br>
 
 
-### Quick exercise: Check whether  the physicians, that have a lot of examples where they are connected to claims with more than 1 relationship, are connected to fraudulent providers. Pick 3 physicians you like.
+### Quick exercise: From the results of the example above, check whether the physicians that have a multiple connections to claim with more than 1 relationship, are connected to fraudulent providers. Pick 3 physicians you like.
+
+<br>
 
 <details>
   <summary> Answer to quick question (Click to expand)</summary>
@@ -551,22 +551,29 @@ return pr, c, p
 The physicians that I chose were all connected to a fraudulent provider.
 </details>
 
-## **Exercise 6.1: Could the reimbursement amount over 100.000 for a claim be a good flag for fraudulent providers?**
+<br>  
+
+## **6.1 Exercise : Find the average claim reimbursement for claims with patients that have cancer.**
+
+The result should approximately be 10403
 <details>
-  <summary> Answer to exercise 6.1(Click to expand)</summary>
+  <summary> Answer to Exercise 6.1 (Click to expand)</summary>
 
 ```
-MATCH (c:Claim)-->(p:Provider)
-WHERE c.reimbursedAmt >= 100000
-RETURN c.id as claim, c.reimbursedAmt as amount, p.id as provider, p.fraud as fraud
-ORDER BY amount DESC LIMIT 50
+MATCH (con:Condition {id: 'ChronicCond_Cancer'})<--(b:Beneficiary)<--(c:Claim)
+WITH avg(c.reimbursedAmt) as average_reimbursed, max(c.reimbursedAmt) as max_reimbursed, min(c.reimbursedAmt) as min_reimbursed
+RETURN average_reimbursed, max_reimbursed, min_reimbursed
 ```
-When ordering by descending see that most of the claims above 100.000 are associated with fraudulent providers. This could indicate that the reimbursement amount could be a feature for machine learning, but more testing must be done.
+Here we can also see what the maximum and minimum reimbursement amounts are
 </details>
 
-<br>
+<br/>
+Next we will connect two or more nodes together and extract information from more that two nodes.
 
-## **Exercise 6.2: It seems like in some claims there is an inconsistency between end date of the claim and the discharge date of the beneficiary. Could you check  how many of these are fraud? Do you see any pattern?**
+<br/>
+
+
+## **6.2 Exercise : It seems like in some claims there is an inconsistency between end date of the claim and the discharge date of the beneficiary. Could you check  how many of these are fraud? Do you see any pattern?**
 <details>
   <summary> Answer to exercise 6.2(Click to expand)</summary>
 
@@ -577,15 +584,28 @@ WITH COUNT(p) AS total_inconsistency
 MATCH (p:Provider)<--(n:Claim)
 WHERE  n.endDate <> n.dischargeDate AND p.fraud = True
 WITH COUNT(*) AS fraud_inconsistency, total_inconsistency
-RETURN fraud_inconsistency, total_inconsistency, (fraud_inconsistency*1.0 / total_inconsistency)*100
+RETURN fraud_inconsistency, total_inconsistency, (fraud_inconsistency*1 / total_inconsistency)*100
 ```
 
-When ordering by descending see that most of the claims above 100.000 are associated with fraudulent providers. This could indicate that the reimbursement amount could be a feature for machine learning, but more testing must be done.
 </details>
 
 <br>
 
-## **7. Example : Lets find the shortest path between provider PRV51003 and PRV51023**  
+Next we will talk about paths in Cypher. 
+
+## **7. Example : Lets talk paths!** 
+
+A path in Cypher is a variable that holds exactly what the name suggests. A path between two nodes. That can either be a 1st degree connection or a 100th degree connection. Lets see an example: 
+
+```
+match path = ((p:Provider) <-- (c:Claim))
+return path
+limit 5
+```
+
+Paths are very valuable in cypher cause they bring out a lot of information that is otherwise almost impossible to access with SQL.
+Lets look at another example.
+## **7.1 Example : Lets find the shortest path between provider PRV51003 and PRV51023** 
 
 Providers are connected in numerous ways. To find the quickest way from one node to another we can use shortestPath.
 Note that we could even provide relationships to consider when looking for the path.
@@ -599,11 +619,11 @@ From the graph we can see that this neighbour is fraudulent.
 
 <br>
 
-## **7. Exercise : Calculate the ratio of fraudsters among the providers in the same distance of 4 hops considering the Procedure and Claim nodes only.** 
+## **7.2 Exercise : Calculate the ratio of fraudsters among the providers in the same distance of 4 hops considering the Procedure and Claim nodes only.** 
 
 TIP: You can specify the exact amount of hops to make to find the neighbouring node you are interested in.
 <details>
-  <summary> Help to Exercise 7 (Click to expand)</summary>
+  <summary> Help to Exercise 7.2 (Click to expand)</summary>
 
 ```
 match (p:Provider)-[*8]-(neighbour:Provider)
@@ -611,7 +631,7 @@ match (p:Provider)-[*8]-(neighbour:Provider)
 </details>
 
 <details>
-  <summary> Answer to exercise 7 (Click to expand)</summary>
+  <summary> Answer to exercise 7.2 (Click to expand)</summary>
 
 ```
 match (p:Provider {id: 'PRV51003'})
@@ -621,17 +641,6 @@ with p, size(collect(distinct neighbours)) as neighbours_count
 match (p)-[:SUBMITTED_BY|HAS_PROCEDURE_CODE_OF*4]-(fraudsters:Provider {fraud:True})
 where p.id <> fraudsters.id
 with p, size(collect(distinct fraudsters)) as fraud_count, neighbours_count
-return p.id, fraud_count*1.0 / neighbours_count as fraudsters_ratio
-```
-
-Bonus answer: If we have collected as list of neigbours, we can operate on it with list projection.
-Lists are first-class citizens in cypher
-```
-match (p:Provider {id: 'PRV51003'})
-match (p)-[:SUBMITTED_BY|HAS_PROCEDURE_CODE_OF*4]-(neighbour:Provider)
-where p.id <> neighbour.id
-with p, collect(distinct neighbour) as neighbours
-with p, size( [ n in neighbours where n.fraud = true | true ] ) as fraud_count, size(neighbours) as neighbours_count
 return p.id, fraud_count*1.0 / neighbours_count as fraudsters_ratio
 ```
 
