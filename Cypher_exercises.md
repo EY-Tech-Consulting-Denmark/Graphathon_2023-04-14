@@ -275,12 +275,8 @@ Next we will extract information from two related nodes.
   <summary> Answer to Exercise 2.3 (Click to expand)</summary>
 
 ```
-MATCH (b:Beneficiary{id:'BENE134045'})-->(cond:Condition)
-MATCH (c:Claim)-->(b)
-MATCH (c)-[x]->(p:Physician)
-MATCH (c)-->(pr:Provider)
-RETURN b, p, c, cond, pr,x
-LIMIT 100
+MATCH (b:Beneficiary{id:'BENE134045'})<--(c:Claim)-->(ph:Physician), (c)-->(pr:Provider)
+RETURN b, ph, c, pr
 ```
 </details>
 
