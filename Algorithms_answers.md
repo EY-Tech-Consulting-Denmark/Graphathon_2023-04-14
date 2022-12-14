@@ -2,9 +2,13 @@
 
 Keep in mind there are multiple solutions to each exercise. Below is just one way to approach the exercises.
 
+## **Similarity**
+
+## **Betweeness**
+
 ## **Centrality**
 
-
+<!---
 ### **Exercise 2.1 Query through the result using python to determine whether this would be a good feature to add?**
 <details>
   <summary> Answer to the execise (Click to expand) </summary>
@@ -79,8 +83,8 @@ claim_phys_degree.drop()
 
 </details>
 <br>
-
-### **Exercise 2.3: Create a new projection that will find the amount of diagnosis that are associated with a claim. Determine whether this would be a good feature to add?**
+-->
+### **Exercise 3.1: Create a new projection that will find the amount of diagnosis that are associated with a claim. Determine whether this would be a good feature to add?**
 
 <details>
   <summary> Answer to the execise (Click to expand) </summary>
@@ -133,7 +137,7 @@ claim_phys_degree.drop()
 <br>
 
 ## **Community Detection**
-
+<!---
 ### **Exercise 3.1: Check the communities that have been found. What is the average claim amount? What providers are above average?**
 
 <details>
@@ -168,11 +172,12 @@ community_dist = gds.run_cypher('''
 community_dist.head(20)
 ```
 
-</details>
 
+</details>
+ -->
 <br>
 
-### **Exercise 3.2: Check the communities that have been found. What is the number of fraudulent providers per community?**
+### **Exercise 4.1: Check the communities that have been found. What is the number of fraudulent providers per community?**
 
 <details>
   <summary> Answer to the execise (Click to expand) </summary>
@@ -199,7 +204,7 @@ community_dist.head(20)
 </details>
 <br>
 
-### **Exercise 3.3: Plot the results.**
+### **Exercise 4.2: Plot the results.**
 
 <details>
   <summary> Answer to the execise (Click to expand) </summary>
