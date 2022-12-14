@@ -1,10 +1,11 @@
-# **ATP – EY Hackathon - Answers to Algorithm Questions**
+# **EY Hackathon - Answers to Algorithm Questions**
 
 Keep in mind there are multiple solutions to each exercise. Below is just one way to approach the exercises.
 
 ## **Similarity**
 
-### **Exercise 1 Calculate the similarity between Beneficiary nodes using filteredSimilarity algorithm.**
+### **Exercise 1.1 Create a graph projection with Beneficiary, Condition, and Claim nodes and all realtionships between them.**
+
 <details>
   <summary> Answer to the execise (Click to expand) </summary>
 
@@ -36,21 +37,71 @@ gds.alpha.nodeSimilarity.filtered.write(bene_sim,
 
 # Drop the graph projection
 bene_sim.drop()
+```
 
-Cypher queries to look at clusters (copy-paste in browser)
+</details>  
+<br>
+
+### **Exercise 1.2: Query the graph in neo4j browser to explore similarity between beneficiaries. Hint: match on the relationship that you created for the Beneficiary nodes**
+
+<details>
+  <summary> Answer to the execise (Click to expand) </summary>
+
+```
+//Cypher queries to look at clusters (copy-paste in browser)
 match (b1)-[r:BENE_SIMILAR_TO]-(b2)
 match (b1)-[]-(f:Fraud|Claim)-[]-(p:Provider)
 return b1, b2, f
 order by r.bene_similarity_score DESC
 limit 100
+```
 
+```
 match (b1)-[r:BENE_SIMILAR_TO]-(b2)
 match (b1)-[]-(c:Condition)
 return b1, b2, c
 limit 100
-</details>  
+''')
+```
+</details>
+<br>
 
 ## **Betweeness**
+
+### **Exercise 2.1: Query throught the results to get betweeness score of every procedure and whether that procedure is connected also to claims submitted by non-fraudulent providers**
+
+<details>
+  <summary> Answer to the execise (Click to expand) </summary>
+
+```
+# Query through the results to see the betweenness score a procedure has and whether that procedure is used by a fraudulent provider
+betweenness_query = gds.run_cypher('''
+// Query the database sorting by the betweenness score associated with each procedure 
+// and whether the provider associated with the procedure is a fraudulent provider
+match (p:Procedure)-[]-(:Claim)-[]-(pr:Provider)
+return distinct p.id as procedure, p.betweenness_score AS score, pr.id AS provider, pr.fraud as fraud
+order by score
+''')
+
+ 
+
+print(betweenness_query.head())
+```
+</details>
+<br>
+
+### **Exercise 2.2: Create a plot comparing distributions of betweeness scores of procedures connecting to claims submitted by only fraudulent providers and betweeness scores of procedures connecting to claims submitted by non-fraudulent providers as well.**
+
+<details>
+  <summary> Answer to the execise (Click to expand) </summary>
+
+```
+# Create a plot, plotting the density of the betweenness scores associated with a procedure for procedures that are associated with a fraudulent provider and non fraudulent providers
+betweenness_query.groupby('fraud')['score'].plot(kind='kde', legend = True)
+```
+The plot shows the distribution of the betweenes score of each precedure code used by non-fraudulent and fraudulent providers. From the plot see that this measure is unlikely to provide too much information.
+</details>
+<br>
 
 ## **Centrality**
 
