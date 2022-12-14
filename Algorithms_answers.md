@@ -4,6 +4,52 @@ Keep in mind there are multiple solutions to each exercise. Below is just one wa
 
 ## **Similarity**
 
+<!---
+### **Exercise 1 Calculate the similarity between Beneficiary nodes using filteredSimilarity algorithm.**
+<details>
+  <summary> Answer to the execise (Click to expand) </summary>
+
+```
+# Project graph
+bene_sim, project_stats = gds.graph.project(
+                  'bene_sim',
+                  ['Beneficiary', 'Condition', 'Claim'],
+                  ['*']
+              )  
+
+# Run the algorithm in stream mode
+gds.alpha.nodeSimilarity.filtered.stream(bene_sim,
+                sourceNodeFilter = 'Beneficiary',
+                targetNodeFilter = 'Beneficiary',   
+                similarityCutoff = 1,
+                concurrency=4
+            )
+
+# Run the algorithm in write mode
+gds.alpha.nodeSimilarity.filtered.write(bene_sim,
+                writeRelationshipType = 'BENE_SIMILAR_TO',
+                writeProperty = 'bene_similarity_score',
+                sourceNodeFilter = 'Beneficiary',
+                targetNodeFilter = 'Beneficiary',   
+                similarityCutoff = 1,
+                concurrency=4
+            )
+
+# Drop the graph projection
+bene_sim.drop()
+
+Cypher queries to look at clusters (copy-paste in browser)
+match (b1)-[r:BENE_SIMILAR_TO]-(b2)
+match (b1)-[]-(f:Fraud|Claim)-[]-(p:Provider)
+return b1, b2, f
+order by r.bene_similarity_score DESC
+limit 100
+
+match (b1)-[r:BENE_SIMILAR_TO]-(b2)
+match (b1)-[]-(c:Condition)
+return b1, b2, c
+limit 100
+
 ## **Betweeness**
 
 ## **Centrality**
