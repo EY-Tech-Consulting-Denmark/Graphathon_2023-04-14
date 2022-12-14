@@ -48,7 +48,7 @@ match (b1)-[r:BENE_SIMILAR_TO]-(b2)
 match (b1)-[]-(c:Condition)
 return b1, b2, c
 limit 100
-<details>  
+</details>  
 
 ## **Betweeness**
 
