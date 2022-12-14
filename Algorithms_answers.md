@@ -3,7 +3,7 @@
 Keep in mind there are multiple solutions to each exercise. Below is just one way to approach the exercises.
 
 ## **Similarity**
-
+<!---
 ### **Exercise 1 Calculate the similarity between Beneficiary nodes using filteredSimilarity algorithm.**
 <details>
   <summary> Answer to the execise (Click to expand) </summary>
@@ -48,6 +48,7 @@ match (b1)-[r:BENE_SIMILAR_TO]-(b2)
 match (b1)-[]-(c:Condition)
 return b1, b2, c
 limit 100
+  
 
 ## **Betweeness**
 
