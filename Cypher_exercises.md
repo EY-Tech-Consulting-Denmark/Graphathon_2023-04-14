@@ -1,6 +1,6 @@
 ![This is the front image](https://s3.ap-southeast-1.amazonaws.com/tribehired.production/news_feed/4AoWyG82rJtbzyThP1QbGQvVXBwztOiIrP83WsGg.jpg)
 
-# **ATP – EY Hackathon**
+# **EY Hackathon**
 
 ## **Introduction to Neo4j and Cypher through the Insurance (Fraud) Claims Graph Database**
 
