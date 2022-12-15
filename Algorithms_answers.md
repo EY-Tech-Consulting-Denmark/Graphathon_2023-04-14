@@ -4,7 +4,7 @@ Keep in mind there are multiple solutions to each exercise. Below is just one wa
 
 ## **Similarity**
 
-### **Exercise 1.1 Create a graph projection with Beneficiary, Condition, and Claim nodes and all realtionships between them.**
+### **Exercise 1.1 Create a graph projection with Beneficiary, Condition, and Claim nodes and all relationships between them.**
 
 <details>
   <summary> Answer to the execise (Click to expand) </summary>
