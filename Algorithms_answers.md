@@ -111,7 +111,7 @@ The plot shows the distribution of the betweenes score of each precedure code us
   <summary> Answer to the execise (Click to expand) </summary>
 
 ```
-# Query throught the results to see how many claims a physician is involved in and whether that physician is involved with a fraudulent provider
+# Query through the results to see how many claims a physician is involved in and whether that physician is involved with a fraudulent provider
 provider_claims = gds.run_cypher(''' 
 //Query the database sorting by amount of claims associated with each physician
 match (c:Claim)-[]-(pr:Provider)
@@ -129,7 +129,7 @@ See that there is a difference in the distribution. So this would be a good feat
 </details>
 <br>
 
-### **Exercise 2.2: Create a new projection that will find the amount of claims are associated with a physician. Determine whether this would be a good feature to add?**
+### **Exercise 2.2: Create a new projection that will find the amount of claims associated with a physician. Determine whether this would be a good feature to add?**
 
 <details>
   <summary> Answer to the execise (Click to expand) </summary>
@@ -210,7 +210,7 @@ gds.degree.write(claim_diag_degree, writeProperty='claim_degree')
 ```
 
 ```
-# Query throught the results to see how many diagnosis are asssociated for the claim and whether that claim is involved with a fraudulent provider
+# Query through the results to see how many diagnosis are asssociated with a claim and whether that claim is involved with a fraudulent provider
 claim_diag_degree = gds.run_cypher(''' 
     //Query the database sorting by amount of claims associated with each physician
     match (d:Diagnosis)-[]-(c:Claim)-[]-(pr:Provider)
@@ -241,7 +241,7 @@ claim_phys_degree.drop()
   <summary> Answer to the execise (Click to expand) </summary>
 
 ```
-# Check our communities, what is the average claim amout, and what providers are above average
+# Check our communities, what is the average claim amount, and what providers are above average
 gds.run_cypher('create range index if not exists for (n:Claim) on (n.community_id)')
 community_dist = gds.run_cypher(''' 
     match (n:Claim)
@@ -280,7 +280,7 @@ community_dist.head(20)
   <summary> Answer to the execise (Click to expand) </summary>
 
 ```
-# Check our communities, what are the number of fraudlent providers per community
+# Check our communities, what is the number of fraudulent providers per community
 gds.run_cypher('create range index if not exists for (n:Claim) on (n.community_id)')
 community_dist = gds.run_cypher(''' 
     match (n:Claim)-[:SUBMITTED_BY]->(p)
