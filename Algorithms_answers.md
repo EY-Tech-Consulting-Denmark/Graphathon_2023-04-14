@@ -66,9 +66,9 @@ limit 100
 </details>
 <br>
 
-## **Betweeness**
+## **Betweenness**
 
-### **Exercise 2.1: Query throught the results to get betweeness score of every procedure and whether that procedure is connected also to claims submitted by non-fraudulent providers**
+### **Exercise 2.1: Query through the results to get betweenness score of every procedure and whether that procedure is connected also to claims submitted by non-fraudulent providers**
 
 <details>
   <summary> Answer to the execise (Click to expand) </summary>
@@ -90,7 +90,7 @@ print(betweenness_query.head())
 </details>
 <br>
 
-### **Exercise 2.2: Create a plot comparing distributions of betweeness scores of procedures connecting to claims submitted by only fraudulent providers and betweeness scores of procedures connecting to claims submitted by non-fraudulent providers as well.**
+### **Exercise 2.2: Create a plot comparing distributions of betweenness scores of procedures connecting to claims submitted by only fraudulent providers and betweenness scores of procedures connecting to claims submitted by non-fraudulent providers as well.**
 
 <details>
   <summary> Answer to the execise (Click to expand) </summary>
@@ -99,7 +99,7 @@ print(betweenness_query.head())
 # Create a plot, plotting the density of the betweenness scores associated with a procedure for procedures that are associated with a fraudulent provider and non fraudulent providers
 betweenness_query.groupby('fraud')['score'].plot(kind='kde', legend = True)
 ```
-The plot shows the distribution of the betweenes score of each precedure code used by non-fraudulent and fraudulent providers. From the plot see that this measure is unlikely to provide too much information.
+The plot shows the distribution of the betweenness score of each procedure code used by non-fraudulent and fraudulent providers. From the plot see that this measure is unlikely to provide too much information.
 </details>
 <br>
 
