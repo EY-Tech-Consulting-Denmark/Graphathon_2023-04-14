@@ -367,7 +367,7 @@ The result should look like the following table:
 We can see here that we had to add the relationship as a variable so that we can group by the type of the relationship. 
 What we can see from the results is that the operating physician is the highest charging type of physician.  
 
-Quick question: The average reimbursed amount number is not very readable though. Can you figure out from [this list of functions](https://neo4j.com/docs/cypher-cheat-sheet/current/#functions) a nice function to make the number more readable i.e. to not have so many decimals, like in the table below?
+Quick question: The average reimbursed amount number is not very readable though. Can you figure out from [this list of functions](https://neo4j.com/docs/cypher-cheat-sheet/current/#functions) a nice function to make the number more readable i.e. rounded to 2 decimal points?
 
 <br>
 <details>
@@ -394,7 +394,7 @@ limit 50
 
 Lets explore the graph result. **The reason why we can now see the graph result option is because we have returned the nodes and not some node attribute value like "c.attribute_example".** 
 
-We can see that some of the results that comprise of only two nodes might also have a relationship where the physician is also attending instead of just operating. Cypher displays more information that might exist between nodes that  satisfy the initial constraints i.e. (Physician) <-[OPERATING]- (Claim). 
+We can see that some of the results that comprise of only two nodes might also have a relationship where the physician is also attending instead of just operating. Cypher displays more information that might exist between nodes that satisfy the initial constraints i.e. (Physician) <-[OPERATING]- (Claim). 
 
 There are also chains of nodes longer than 2 nodes.  The same principle applies to that as well. The initial population is the pairs of nodes that satisfy the criteria and then Cypher checks if there is any additional information that can be displayed.  
 
