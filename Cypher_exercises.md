@@ -367,7 +367,7 @@ The result should look like the following table:
 We can see here that we had to add the relationship as a variable so that we can group by the type of the relationship. 
 What we can see from the results is that the operating physician is the highest charging type of physician.  
 
-Quick question: The average reimbursed amount number is not very readable though. Can you figure out from [this list of functions](https://neo4j.com/docs/cypher-cheat-sheet/current/#functions) a nice function to make the number more readable i.e. to not have so many decimals, like in the table below?
+Quick question: The average reimbursed amount number is not very readable though. Can you figure out from [this list of functions](https://neo4j.com/docs/cypher-cheat-sheet/current/#functions) a nice function to make the number more readable i.e. to not have so many decimals?
 
 <br>
 <details>
