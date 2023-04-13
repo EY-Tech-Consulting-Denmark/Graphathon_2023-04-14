@@ -532,7 +532,7 @@ It would be interesting to see if physicians with similar behaviour are connecte
 <br>
 
 
-### Quick exercise: From the results of the example above, check whether the physicians that have a multiple connections to claim with more than 1 relationship, are connected to fraudulent providers. Pick 3 physicians you like.
+### Quick exercise: From the results of the example above, check whether the physicians that have multiple connections to a claim with more than 1 relationship, are connected to fraudulent providers. Pick 3 physicians you like.
 
 <br>
 
