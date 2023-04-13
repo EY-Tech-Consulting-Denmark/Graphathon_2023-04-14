@@ -6,10 +6,10 @@
 
 This document contains the exercises that the participants will have to solve during the hackathon. The idea is to introduce the participant to Cypher and the possibilities of Graph Databases (GD) through a series of exercises.
 
-The exercises start out simple and increase in difficulty and complexity. Additionally, there is a seperate notebook that will introduce some graph algorithms, then working in teams implement graph algorithms and add them as potential features to a machine learning model.
+The exercises start out simple and increase in difficulty and complexity. Additionally, there is a seperate notebook that will introduce some graph algorithms, then the participants can work in teams to implement those graph algorithms and add them as potential features to a machine learning model.
 <!--
 The exercises are split into 3 levels. Each level is more demanding than the previous as it touches upon more advanced concepts.
-The structure is the following:
+The structure is described below:
 
 ***Level 1 : Basics of Cypher and GD***
 
@@ -32,16 +32,16 @@ These exercises will be hosted in another notebook which will be provided sepera
 
 ### **Tasks**
 
-First we will start with some basic stuff that you just need to run in Cypher that help you get a better understanding of the dataset and the databases.
-These are simple Tasks where you just need to copy-paste the code in the Sandbox, run it and just see the results.
+First, we will start with some basic stuff that you just need to run in Cypher that help you get a better understanding of the dataset and the databases.
+These are simple tasks where you just need to copy-paste the code in the Sandbox, run it and see the results.
 
 ### **Exercises**
 
 The idea is that, each new step will start with a small example that introduces you to some new syntax and logic in Cypher. At the same time we will try to explore different aspects of the dataset while we are getting acquainted with the new syntax.  
 
-After having understood the example you can move on to the exercise that folows that example. There you will be asked to extract the results that the question is requiring. The exercise will most of the times require to extract some additional value from the example or to reuse the code to extract a diffirent result with the same concept.  
+After having understood the example, you can move on to the exercise that follows that example. There you will be asked to extract the results that the question is requiring. The exercise will most of the times require to extract some additional value from the example or to reuse the code to extract a different result with the same concept.  
 
-Once we have learned some cool Cypher tricks, there will be a series of small exercises that would resemble some small Data Analysis steps.
+Once we have learned some cool Cypher tricks, there will be a series of small exercises that would resemble some small data analysis steps.
 
 <br>
 
@@ -217,7 +217,7 @@ The result should look like the following table:
 └──────────┴───────────────┘
  ```
 
- Notice how the relationship between the provider and claim was not necessary to specify in this example. We would have to specify the relation between nodes if we are only interested in a particular way the two nodes are connected. 
+ Notice how the relationship between Provider and Claim was not necessary to be specified in this example. We would have to specify the relation between nodes if we are only interested in a particular way the two nodes are connected. 
 
 
 
@@ -376,10 +376,10 @@ Quick question: The average reimbursed amount number is not very readable though
 ```
  either the round() or toInteger() functions over avg(c.reimbursedAmt) 
 ```
-There is a lot of math , string and logical functions that can be applied on the node properties.
+There is a lot of math, string and logical functions that can be applied on the node properties.
 </details>
 <br>
-Up to now we have been viewing our results in tabular form much like as with any standard SQL query language. We will now also get acquainted with results in graph form. This way is much more visual, it makes it easier to spot interesting connection and is another benefit of using graph databases.
+Up to now we have been viewing our results in tabular form, much like as with any standard SQL query language. We will now also get acquainted with results in graph form. This way is much more visual, it makes it easier to spot interesting connection and is another benefit of using graph databases.
 
 Lets look at an example:
 
@@ -516,7 +516,7 @@ Lets expand the idea to physicians and the claims and introduce the  <a href="ht
 
 
 ## **6. Example : Lets find the physicians that have more than one type of connection to the same claim. Limit the results to 100.**  
-The WITH statement can be basically thought of a temporary RESULT statement. In this case, we can use it to find which physicians have more than one relationship to a claim and filter on that aggregation before we even reach the the result statement. 
+The WITH statement can be basically thought of a temporary RESULT statement. In this case, we can use it to find which physicians have more than one relationship to a claim and filter on that aggregation before we even reach the result statement. 
 ```
 match (p:Physician)<-[rel]-(c:Claim)
 with p, c, count(*) as  rel_count, collect(type(rel)) as rel_types
