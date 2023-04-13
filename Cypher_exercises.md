@@ -524,7 +524,7 @@ where rel_count >1
 return p, rel_count , c, rel_types
 limit 100
 ```
-If we run the result we can see some physicians like the following one in the image having mmultiple relationships to many different claims. 
+If we run the result we can see some physicians like the following one in the image having multiple relationships to many different claims. 
 
 ![Physicians_multiple_claim_relationships](Data/images/Physicians_multiple_claim_relationships.png)
 
